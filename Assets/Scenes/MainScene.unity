@@ -288,6 +288,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ad57d5e3d36e44fa05bff1923d37a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  port: 7777
+  maxClientCount: 4
+  isMatchInProgress: 0
 --- !u!4 &1900675570
 Transform:
   m_ObjectHideFlags: 0

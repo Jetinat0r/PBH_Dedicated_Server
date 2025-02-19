@@ -5,6 +5,24 @@ using UnityEngine;
 using Riptide;
 using Riptide.Utils;
 
+public enum ClientToServerId : ushort
+{
+    requestDisconnect = 0,
+    joinInfo = 1,
+    playerPosRot = 2,
+    shoveStart = 3,
+    shoveExecute = 4,
+}
+
+public enum ServerToClientId : ushort
+{
+    disconnectWithReason = 0,
+    playerSpawnInfo = 1,
+    playerPosRot = 2,
+    playerShoveStart = 3,
+    playerShoveExecute = 4,
+}
+
 public class ServerManager : MonoBehaviour
 {
     Server server;
@@ -12,6 +30,9 @@ public class ServerManager : MonoBehaviour
     private ushort port = 7777;
     [SerializeField]
     public ushort maxClientCount = 4;
+    [SerializeField]
+    //TODO: Move to different place
+    public bool isMatchInProgress = false;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
     public static void InitializeRiptide()
@@ -60,6 +81,9 @@ public class ServerManager : MonoBehaviour
 
         server = new Server();
         server.Start(port, maxClientCount);
+
+        server.HandleConnection += HandleIncomingConnection;
+        server.ClientConnected += OnClientConnected;
     }
 
     // Update is called once per frame
@@ -71,5 +95,24 @@ public class ServerManager : MonoBehaviour
     private void FixedUpdate()
     {
         server.Update();
+    }
+
+    private void HandleIncomingConnection(Connection _pendingConnection, Message _connectMessage)
+    {
+        if (isMatchInProgress)
+        {
+            Message _disconnectReason = Message.Create();
+            _disconnectReason.AddString("Can't join match in progress!");
+            server.Reject(_pendingConnection, _disconnectReason);
+            return;
+        }
+
+        server.Accept(_pendingConnection);
+        //TODO: Try to sort out name & color right here
+    }
+
+    private void OnClientConnected(object _sender, ServerConnectedEventArgs _e)
+    {
+        
     }
 }
