@@ -163,6 +163,7 @@ public class ServerManager : MonoBehaviour
             _nameDedupeCounter++;
             _nameDeduper = _nameDedupeCounter.ToString();
         }
+        _playerName += _nameDeduper;
 
         if(server.ClientCount > GameManager.instance.playerColors.Count)
         {
@@ -179,10 +180,13 @@ public class ServerManager : MonoBehaviour
             }
         }
 
-        _assignNewPlayerInfo.AddString(_playerName + _nameDeduper);
+        _assignNewPlayerInfo.AddString(_playerName);
         _assignNewPlayerInfo.AddInt(_playerColor);
 
+        //Alert existing players that someone new has joined
         server.SendToAll(_assignNewPlayerInfo);
+
+        //Inform the new player about existing players
         foreach(KeyValuePair<ushort, Player> _existingPlayer in GameManager.playerList)
         {
             Message _sendExistingPlayer = Message.Create(MessageSendMode.Reliable, ServerToClientId.playerSpawnInfo);
@@ -193,6 +197,7 @@ public class ServerManager : MonoBehaviour
             server.Send(_sendExistingPlayer, _pendingConnection.Id);
         }
 
+        //Setup reference gameobject
         GameManager.instance.CreateNewPlayer(_pendingConnection.Id, _playerName, _playerColor);
     }
 
