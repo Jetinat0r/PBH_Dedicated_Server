@@ -133,5 +133,18 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning($"Received Push Return from client {_fromClientId} that does not exist!");
         }
     }
+
+    [MessageHandler((ushort)ClientToServerId.placeBulletPattern)]
+    public static void ReceivePlaceBulletPattern(ushort _fromClientId, Message _message)
+    {
+        int _bulletPatternId = _message.GetInt();
+        Vector3Int _bulletPatternTilePosition = _message.GetVector3Int();
+
+        Message _spawnBulletPatternMessage = Message.Create(MessageSendMode.Reliable, ServerToClientId.spawnBulletPattern);
+        _spawnBulletPatternMessage.AddInt(_bulletPatternId);
+        _spawnBulletPatternMessage.AddVector3Int(_bulletPatternTilePosition);
+
+        ServerManager.instance.server.SendToAll(_spawnBulletPatternMessage, _fromClientId);
+    }
     #endregion
 }
