@@ -30,4 +30,19 @@ public class Player : MonoBehaviour
             _hand.color = GameManager.instance.playerColors[color];
         }
     }
+
+    public void ChargePush()
+    {
+        handHolder.localPosition = new Vector3(0f, -0.25f, 0f);
+    }
+
+    public void ExecutePush()
+    {
+        handHolder.localPosition = new Vector3(0f, 0.5f, 0f);
+    }
+
+    public void ResetPush()
+    {
+        handHolder.localPosition = new Vector3(0f, 0f, 0f);
+    }
 }

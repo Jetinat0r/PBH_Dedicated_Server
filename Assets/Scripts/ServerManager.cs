@@ -12,6 +12,7 @@ public enum ClientToServerId : ushort
     playerPosRot,
     pushStart,
     pushExecute,
+    playerPushReturn,
 }
 
 public enum ServerToClientId : ushort
@@ -21,6 +22,7 @@ public enum ServerToClientId : ushort
     playerPosRot,
     playerPushStart,
     playerPushExecute,
+    playerPushReturn,
 }
 
 public class ServerManager : MonoBehaviour
